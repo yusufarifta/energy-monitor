@@ -1,0 +1,132 @@
+<div class="border-bottom border-secondary d-flex justify-content-between border-opacity-25 pb-3">
+  <div class="d-flex align-items-center">
+    <fa-icon [icon]="icons.faArrowLeft" style="font-size: 22px; font-weight: 600" (click)="goBack()"></fa-icon>
+    <span class="ms-4" style="font-size: 22px; font-weight: 600" *ngIf="!isLoading">{{ data?.location_name }}</span>
+    <ngx-skeleton-loader class="ms-3"
+                         [theme]="{width: '200px', height: '30px', 'background-color': 'rgba(199,199,199,0.63)', margin: 0}"
+                         appearance="line" *ngIf="isLoading"></ngx-skeleton-loader>
+  </div>
+  <div class="d-flex gap-3">
+    <button class="btn btn-outline-danger fw-semibold fs-6 px-3">
+      <fa-icon [icon]="icons.faTrashCan"></fa-icon>
+      Hapus
+    </button>
+    <button class="btn fw-semibold fs-6 bg-main px-3">
+      <fa-icon [icon]="icons.faPenToSquare"></fa-icon>
+      Edit
+    </button>
+  </div>
+</div>
+
+<div class="d-flex justify-content-start gap-3 mt-5">
+  <button
+    class="btn rounded-pill text-capitalize px-3 {{selectedButtonPeriod !== btn ? 'btn-outline-secondary' : 'bg-main'}}"
+    *ngFor="let btn of BUTTON_PERIOD" (click)="selectButton(btn)">{{ btn }}
+  </button>
+</div>
+
+<div class="row mt-5">
+  <ng-container *ngIf="!isLoading; else powerLoading">
+    <div class="col-12 col-md-6 col-lg-3 mb-3" *ngFor="let d of dataPower">
+      <div class="d-flex flex-column justify-content-between rounded-4 p-3 border" style="height: 10rem"
+           [style.background-color]="PowerColor['power'+d.power_name]"
+           [style.border-color]="PowerColor['border'+d.power_name] + '!important'">
+        <div>
+          <div class="d-flex justify-content-between">
+            <span class="opacity-50" style="font-size: 14px">{{ d.power_name }}</span>
+            <fa-icon size="xl" class="opacity-50" [icon]="icons[powerIcon[d.power_name]]"></fa-icon>
+          </div>
+          <h4 class="my-2 fw-semibold">{{ d.energy_generated ? parseFloat(d.energy_generated) : 0 }}</h4>
+        </div>
+        <div style="cursor: pointer;" (click)="toDetailPower(d.id)">See Details
+          <fa-icon [icon]="icons.faArrowRight"></fa-icon>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3 mb-3">
+      <div class="d-flex flex-column justify-content-between rounded-4 p-3 border bg-black text-white"
+           style="height: 10rem">
+        <div class="d-flex justify-content-between">
+          <span style="font-size: 14px">How much energy used</span>
+          <fa-icon size="xl" [icon]="icons.faHouse"></fa-icon>
+        </div>
+        <h4 class="mt-5">{{data.total_power}} W</h4>
+      </div>
+    </div>
+  </ng-container>
+  <ng-template #powerLoading>
+    <div class="col-12 col-md-6 col-lg-3" *ngFor="let i of [1,2,3,4]">
+      <ngx-skeleton-loader appearance="line"
+                           [theme]="{width: '100%', height: '10rem', 'background-color': 'rgba(199,199,199,0.63)', 'border-radius': '11px'}"></ngx-skeleton-loader>
+    </div>
+  </ng-template>
+</div>
+
+<div class="card rounded-4 p-1">
+  <div class="card-header d-flex justify-content-between align-items-center p-3">
+    <span class="fw-semibold" style="font-size: 16px">Zone List</span>
+    <button class="btn bg-main d-flex gap-3 px-5">
+      <fa-icon [icon]="icons.faSquarePlus" class=""></fa-icon>
+      <span>Zone</span>
+    </button>
+  </div>
+  <div class="card-body border-bottom d-flex flex-wrap justify-content-between">
+    <div class="d-flex gap-3 flex-wrap">
+      <button class="btn rounded-4 px-3 py-2"
+              [ngStyle]="{'color': selectedButtonZone === i ? 'white' : colorZone(i), 'border-color': selectedButtonZone === i ? '' : colorZone(i), 'background-color': selectedButtonZone === i ? '#CE9312' : ''}"
+              *ngFor="let i of button" (click)="selectButtonZone(i)">{{ i }}
+      </button>
+    </div>
+    <div class="d-flex gap-3 align-items-center mt-3 mt-md-0">
+      <input type="text" class="form-control" placeholder="Zone Name">
+      <fa-icon size="xl" [icon]="icons.faSearch"></fa-icon>
+      <fa-icon [class]="isLoading ? 'fa-pulse' : ''" size="xl" [icon]="icons.faRefresh" (click)="refresh()"></fa-icon>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="table {{!isLoading && 'table-striped'}}">
+      <thead>
+      <tr class="py-3">
+        <th class="py-3 ps-3 text-nowrap">Zone Name</th>
+        <th class="py-3 text-nowrap">Energy Usage (kW)</th>
+        <th class="py-3 text-nowrap">Active Power (kW)</th>
+        <th class="py-3 text-nowrap">Reactive Energy (kW)</th>
+        <th class="py-3 text-nowrap">Voltage (V)</th>
+        <th class="py-3 text-nowrap">Current (A)</th>
+        <th class="py-3 text-nowrap">Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngIf="!isLoading; else tableLoading">
+        <tr *ngFor="let d of data?.zones | paginate: {id: 'data', itemsPerPage: pageSize, currentPage: currentPage, totalItems: totalItems}">
+          <td class="py-3 ps-3">{{ d.zone_name ?? '-' }}</td>
+          <td class="py-3">{{ d.energy_used ?? '-' }}</td>
+          <td class="py-3">{{ d.power ?? '-' }}</td>
+          <td class="py-3">{{ d.reactive_energy ?? '-' }}</td>
+          <td class="py-3">{{ d.voltage ?? '-' }}</td>
+          <td class="py-3">{{ d.current ?? '-' }}</td>
+          <td class="py-3 dropdown text-center">
+            <fa-icon [icon]="icons.faEllipsisV" class="px-3" data-bs-toggle="dropdown" aria-expanded="false"></fa-icon>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Edit</a></li>
+              <li><a class="dropdown-item" href="#">Hapus</a></li>
+            </ul>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-template #tableLoading>
+        <tr class="py-3" *ngFor="let i of [1,2,3,4]">
+          <th class="py-3 ps-3" *ngFor="let j of [1,2,3,4,5,6,7]">
+            <ngx-skeleton-loader appearance="line"></ngx-skeleton-loader>
+          </th>
+        </tr>
+      </ng-template>
+      </tbody>
+    </table>
+  </div>
+  <div class="d-flex justify-content-end align-items-center" *ngIf="!isLoading">
+    <span class="fw-semibold">Page</span>
+    <pagination-controls (pageChange)="pageChange($event)" id="data" previousLabel="" nextLabel=""
+                         class="d-flex justify-content-end mt-3"></pagination-controls>
+  </div>
+</div>

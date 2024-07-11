@@ -1,0 +1,57 @@
+.ng-select.custom {
+  min-height: 15px;
+}
+
+.ng-value-label {
+  color: red;
+}
+
+.ng-select.custom .ng-select-container  {
+  min-height: 0px;
+  border-radius: 0;
+  display: none;
+  background-color: black;
+}
+.ng-select.custom ::ng-deep .ng-select-container  {
+  min-height: 14px;
+}
+
+table {
+  border-spacing: 15px;
+  padding: 1rem;
+}
+th {
+  //margin: 15px;
+  padding: 15px;
+  vertical-align: text-top;
+}
+table tbody td {
+  padding: 15px;
+}
+
+
+table tbody tr td {
+  text-wrap: nowrap;
+}
+.table-striped>tbody>tr:nth-child(even)>td,
+.table-striped>tbody>tr:nth-child(even)>th {
+  background-color: #d7d7d7; // Choose your own color here
+}
+
+.table-striped>tbody>tr:nth-child {
+  background-color: white;
+}
+
+//table tbody tr:nth-child(odd) {
+//  background-color: #ffffff; /* White color for odd rows */
+//}
+//
+//.custom-button:hover,
+//.custom-button:focus,
+//.custom-button:active {
+//  background-color: transparent !important; /* Remove background on hover/focus */
+//  border-color: inherit !important; /* Maintain border color */
+//  box-shadow: none !important; /* Remove box shadow */
+//  outline: none !important; /* Remove outline */
+//  transition: none !important; /* Remove any transition effects */
+//}

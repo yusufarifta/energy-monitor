@@ -1,4 +1,4 @@
-<div class="bg-light dark:bg-transparent min-vh-100 d-flex flex-row align-items-center">
+<!-- <div class="bg-light dark:bg-transparent min-vh-100 d-flex flex-row align-items-center">
   <c-container breakpoint="md">
     <c-row class="justify-content-center">
       <c-col lg="10" xl="8">
@@ -58,4 +58,75 @@
       </c-col>
     </c-row>
   </c-container>
-</div>
+</div> -->
+
+
+<c-container fluid [gutter]="0">
+  <c-row style="min-height: 100vh" [gutter]="0">
+    <c-col md="7">
+      <img
+        src="/assets/images/login-image.png"
+        class="w-100 h-100 object-fit-cover d-none d-md-block"
+        style="
+          object-position: right;
+        "
+       alt="login image"/>
+    </c-col>
+    <c-col
+      md="5"
+      class="d-flex flex-column align-items-center justify-content-center gap-5"
+    >
+      <div class="w-75 d-flex flex-column align-items-stretch gap-3">
+        <div class="d-flex gap-2 align-items-center align-self-center">
+          <img src="/assets/logo.svg" alt="logo" height="40" />
+          <span
+            class="text-uppercase"
+            style="font-family: 'Rubik Mono One', monospace"
+            >power monitor</span
+          >
+        </div>
+        <h5 class="fw-bold" style="font-size: 1.5em; font-family: 'Poppins', sans-serif">
+          Welcome back, Glad to see you, Again!
+        </h5>
+        <form
+          name="form"
+          #f="ngForm"
+          novalidate
+          method="post"
+          class="d-flex flex-column gap-3"
+          (ngSubmit)="
+            f.form.valid &&
+              login({ email: email.value, password: password.value })
+          "
+        >
+          <span *ngIf="f.submitted && !email.valid" class="text-danger"
+            >Email is required</span
+          >
+          <input
+            type="text"
+            name="email"
+            ngModel
+            #email="ngModel"
+            required
+            placeholder="Enter your email"
+            class="form-control"
+          />
+          <span *ngIf="f.submitted && !password.valid" class="text-danger">Password is required</span>
+          <input
+            type="password"
+            name="password"
+            #password="ngModel"
+            ngModel
+            placeholder="Enter your password"
+            class="form-control"
+          />
+          <span class="align-self-end fw-bold">Forgot password?</span>
+          <button type="submit" class="btn btn-dark w-100 mt-4 p-2" [disabled]="isLoading">
+            <i *ngIf="isLoading" class="fas fa-spinner fa-pulse"></i> {{isLoading ? "Loading..."
+            :"Submit"}}
+          </button>
+        </form>
+      </div>
+    </c-col>
+  </c-row>
+</c-container>

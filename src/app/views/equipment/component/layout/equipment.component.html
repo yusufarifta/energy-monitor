@@ -1,0 +1,67 @@
+<div class="container">
+  <div class="d-flex gap-3 align-items-end flex-wrap">
+    <div class="d-flex flex-column">
+      <h6>Location</h6>
+      <ng-select [items]="locationData" placeholder="select" [(ngModel)]="form.locationName" #locationName="ngModel" (ngModelChange)="loadZone($event)"></ng-select>
+    </div>
+    <div class="d-flex flex-column">
+      <h6>Zone</h6>
+      <ng-select [items]="zoneData" [disabled]="!locationName.value" placeholder="select" [(ngModel)]="form.zoneName" #zoneName="ngModel"></ng-select>
+    </div>
+    <div class="d-flex flex-column">
+      <h6>Equipment</h6>
+      <input type="text" placeholder="Equipment Name" class="form-control" [(ngModel)]="form.equipmentName" #equipmentName="ngModel" [disabled]="!zoneName.value">
+    </div>
+    <div class="d-flex gap-4 align-items-center" style="height: 36px">
+      <fa-icon [icon]="icons.faSearch" class="fw-light" (click)="(locationName.value && zoneName.value && equipmentName.value) && search()"></fa-icon>
+      <fa-icon [icon]="icons.faRefresh" class="fw-bold {{isLoading && 'fa-pulse'}}" (click)="refresh()"></fa-icon>
+    </div>
+  </div>
+  <div class="container-fluid rounded bg-white mt-5 p-3 overflow-x-auto">
+    <h6 class="py-3 border-bottom">List Equipment</h6>
+    <table class="table {{ !isLoading && 'table-striped'}} table-responsive">
+      <thead class="px-3 mx-3">
+        <th>Equipment Name</th>
+        <th>Serial Number</th>
+        <th>Zone</th>
+        <th>Location</th>
+        <th>Action</th>
+      </thead>
+      <tbody>
+      <ng-container *ngIf="!isLoading">
+        <tr *ngFor="let d of data | paginate: {id: 'data', itemsPerPage: pageSize, currentPage: currentPage, totalItems: totalItems}">
+          <td>{{d.equipment_name}}</td>
+          <td>{{d.serial_number}}</td>
+          <td>{{d.zone_name}}</td>
+          <td>{{d.location_name}}</td>
+          <td style="text-align: center">
+            <div ngbDropdown class="d-inline-block">
+              <button
+                class="btn btn-sm"
+                type="button"
+                id="dropdownMenuButton"
+                ngbDropdownToggle
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <!--                    <fa-icon [icon]="icons.faEllipsisV"></fa-icon>-->
+              </button>
+              <div ngbDropdownMenu aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" style="cursor: pointer">Edit</a>
+                <a class="dropdown-item" style="cursor: pointer">Hapus</a>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="isLoading">
+        <tr *ngFor="let i of [1,2,3,4,5]">
+          <td *ngFor="let i of [1,2,3,4,5]"><ngx-skeleton-loader appearance="line"></ngx-skeleton-loader></td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+  <pagination-controls *ngIf="!isLoading" (pageChange)="pageChange($event)" id="data" previousLabel="" nextLabel=""
+                       class="d-flex justify-content-end mt-3"></pagination-controls>
+</div>

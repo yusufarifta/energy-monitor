@@ -1,4 +1,4 @@
-import { ApplicationConfig, importProvidersFrom } from '@angular/core';
+import {ApplicationConfig, importProvidersFrom, Injector} from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import {
   provideRouter,
@@ -12,6 +12,13 @@ import {
 import { DropdownModule, SidebarModule } from '@coreui/angular';
 import { IconSetService } from '@coreui/icons-angular';
 import { routes } from './app.routes';
+import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptors, withInterceptorsFromDi} from "@angular/common/http";
+import {provideToastr} from "ngx-toastr";
+import {ModalModule} from "ngx-bootstrap/modal"
+import {appInjector} from "./app.injector";
+import {NgxPaginationModule} from "ngx-pagination";
+import {ExtendedHttpInterceptor} from "./services/system/extended-http.service";
+import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -27,8 +34,11 @@ export const appConfig: ApplicationConfig = {
       withViewTransitions(),
       withHashLocation()
     ),
-    importProvidersFrom(SidebarModule, DropdownModule),
+    provideHttpClient(withInterceptorsFromDi()), {provide: HTTP_INTERCEPTORS, useClass: ExtendedHttpInterceptor, multi: true},
+    importProvidersFrom(SidebarModule, DropdownModule, ModalModule.forRoot(), NgxPaginationModule, NgbModule),
     IconSetService,
-    provideAnimations()
+    provideAnimations(),
+    provideHttpClient(),
+    provideToastr(),
   ]
 };

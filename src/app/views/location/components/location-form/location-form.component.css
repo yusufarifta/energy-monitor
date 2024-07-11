@@ -1,0 +1,18 @@
+* {
+  font-size: 12px;
+}
+
+.form-check-input[type="checkbox"] {
+  width: 45px !important;
+  height: 21px;
+}
+
+.form-check-input[type="checkbox"]:checked {
+  border-color: green !important;
+  background-color: green !important;
+}
+
+.form-check-input[type="radio"] {
+  width: 26px !important;
+  height: 26px;
+}

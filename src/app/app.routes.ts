@@ -1,10 +1,11 @@
-import { Routes } from '@angular/router';
-import { DefaultLayoutComponent } from './layout';
+import {Routes} from '@angular/router';
+import {DefaultLayoutComponent} from './layout';
+import {AuthGuard} from "./services/system/auth.guard";
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'dashboard',
+    redirectTo: 'location',
     pathMatch: 'full'
   },
   {
@@ -14,6 +15,21 @@ export const routes: Routes = [
       title: 'Home'
     },
     children: [
+      {
+        path: "location",
+        loadChildren: () => import("./views/location/routes").then(m => m.routes),
+        canActivate: [AuthGuard]
+      },
+      {
+        path: "zone",
+        loadChildren: () => import("./views/zone/routes").then(m => m.routes),
+        canActivate: [AuthGuard]
+      },
+      {
+        path: "equipment",
+        loadChildren: () => import("./views/equipment/routes").then(r => r.routes),
+        canActivate: [AuthGuard]
+      },
       {
         path: 'dashboard',
         loadChildren: () => import('./views/dashboard/routes').then((m) => m.routes)
@@ -84,5 +100,5 @@ export const routes: Routes = [
       title: 'Register Page'
     }
   },
-  { path: '**', redirectTo: 'dashboard' }
+  {path: '**', redirectTo: 'dashboard'}
 ];
